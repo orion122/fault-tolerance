@@ -25,12 +25,12 @@ def switch_main_cisco_to_secondary():
     #print(output)
 
 
-def was_available():
+def was_available_before():
     with open('was_available.txt', 'r') as file:
         return str_to_bool(file.read())
 
 
-def write_last_availability(state):
+def save_availability_state(state):
     with open('was_available.txt', 'w') as file:
         file.write(str(state))
 
@@ -42,7 +42,7 @@ def str_to_bool(s):
          return False
 
 
-def is_available():
+def is_available_now():
     s = socket.socket()
     try:
         s.connect((primary, port))
@@ -57,14 +57,14 @@ def is_available():
 
 
 def switch():
-    isAvailable = is_available()
-    wasAvailable = was_available()
+    isAvailableNow = is_available_now()
+    wasAvailableBefore = was_available_before()
 
-    if isAvailable and not wasAvailable:
-        write_last_availability(isAvailable)
+    if isAvailableNow and not wasAvailableBefore:
+        save_availability_state(isAvailableNow)
         switch_main_cisco_to_primary()
-    elif not isAvailable and wasAvailable:
-        write_last_availability(isAvailable)
+    elif not isAvailableNow and wasAvailableBefore:
+        save_availability_state(isAvailableNow)
         switch_main_cisco_to_secondary()
 
 
