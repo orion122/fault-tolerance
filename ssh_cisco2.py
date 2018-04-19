@@ -1,12 +1,7 @@
 import crassh
 import socket
 from time import sleep
-
-port = 22
-main_cisco = '192.168.117.141'
-primary = '195.133.196.173'
-username = 'admin'
-password = 'QwertY651397'
+import config
 
 
 def switch_main_cisco_to_primary():
