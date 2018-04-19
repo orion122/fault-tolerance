@@ -56,17 +56,20 @@ def is_available_now():
         s.close()
 
 
+def isStateChanged(isAvailableNow, isAvailableBefore):
+    return isAvailableNow != isAvailableBefore
+
+
 def switch():
     isAvailableNow = is_available_now()
     wasAvailableBefore = was_available_before()
 
-    if isAvailableNow and not wasAvailableBefore:
+    if isStateChanged(isAvailableNow, wasAvailableBefore):
         save_availability_state(isAvailableNow)
-        switch_main_cisco_to_primary()
-    elif not isAvailableNow and wasAvailableBefore:
-        save_availability_state(isAvailableNow)
-        switch_main_cisco_to_secondary()
-
+        if isAvailableNow:
+            switch_main_cisco_to_primary()
+        else:
+            switch_main_cisco_to_secondary()
 
 while True:
     switch()
