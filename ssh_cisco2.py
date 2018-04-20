@@ -61,10 +61,7 @@ def switch():
 
     if isStateChanged(isAvailableNow, wasAvailableBefore):
         save_availability_state(isAvailableNow)
-        if isAvailableNow:
-            switch_main_cisco_to_primary()
-        else:
-            switch_main_cisco_to_secondary()
+        switch_main_cisco_to_primary() if isAvailableNow else switch_main_cisco_to_secondary()
 
 while True:
     switch()
