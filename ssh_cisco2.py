@@ -5,17 +5,17 @@ import config
 
 
 def switch_main_cisco_to_primary():
-    hostname = crassh.connect(main_cisco, username, password)
+    hostname = crassh.connect(config.main_cisco, config.username, config.password)
     crassh.send_command("conf t", hostname)
-    output = crassh.send_command("hostname CSR-TEST1-Primary", hostname, 5)
+    output = crassh.send_command("hostname CSR-TEST1-Primary", hostname, 3)
     crassh.disconnect()
     #print(output)
 
 
 def switch_main_cisco_to_secondary():
-    hostname = crassh.connect(main_cisco, username, password)
+    hostname = crassh.connect(config.main_cisco, config.username, config.password)
     crassh.send_command("conf t", hostname)
-    output = crassh.send_command("hostname CSR-TEST1-Secondary", hostname, 5)
+    output = crassh.send_command("hostname CSR-TEST1-Secondary", hostname, 3)
     crassh.disconnect()
     #print(output)
 
@@ -40,7 +40,7 @@ def str_to_bool(s):
 def is_available_now():
     s = socket.socket()
     try:
-        s.connect((primary, port))
+        s.connect((config.primary, config.port))
         s.settimeout(3)
         print('Available')
         return True
