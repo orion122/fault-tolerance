@@ -22,7 +22,8 @@ def switch_main_cisco_to_secondary():
 
 def was_available_before():
     with open('was_available.txt', 'r') as file:
-        return str_to_bool(file.read())
+        wasAvailableBefore = str_to_bool(file.read())
+        return wasAvailableBefore
 
 
 def save_availability_state(state):
@@ -53,7 +54,7 @@ def is_available_by_SSH():
 
 def is_available_by_ICMP():
     exitStatus = os.system("ping -c 1 -W 1 " + config.primary)
-    return print('True') if exitStatus == 0 else print('False')
+    return True if exitStatus == 0 else False
 
 
 def is_available_now(isAvailableBySSH, isAvailableByICMP):
