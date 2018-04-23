@@ -1,5 +1,5 @@
 import crassh
-import socket
+import socket, os
 from time import sleep
 import config
 
@@ -7,7 +7,7 @@ import config
 def switch_main_cisco_to_primary():
     hostname = crassh.connect(config.main_cisco, config.username, config.password)
     crassh.send_command("conf t", hostname)
-    output = crassh.send_command("hostname CSR-TEST1-Primary", hostname, 3)
+    output = crassh.send_command("hostname CSR-TEST1-Primary", hostname, 1)
     crassh.disconnect()
     #print(output)
 
@@ -15,7 +15,7 @@ def switch_main_cisco_to_primary():
 def switch_main_cisco_to_secondary():
     hostname = crassh.connect(config.main_cisco, config.username, config.password)
     crassh.send_command("conf t", hostname)
-    output = crassh.send_command("hostname CSR-TEST1-Secondary", hostname, 3)
+    output = crassh.send_command("hostname CSR-TEST1-Secondary", hostname, 1)
     crassh.disconnect()
     #print(output)
 
@@ -37,18 +37,27 @@ def str_to_bool(s):
          return False
 
 
-def is_available_now():
+def is_available_by_SSH():
     s = socket.socket()
     try:
         s.connect((config.primary, config.port))
-        s.settimeout(3)
-        print('Available')
+        s.settimeout(1)
+        print('Available By SSH')
         return True
     except:
-        print('Not Available')
+        print('Not Available By SSH')
         return False
     finally:
         s.close()
+
+
+def is_available_by_ICMP():
+    exitStatus = os.system("ping -c 1 -W 1 " + config.primary)
+    return print('True') if exitStatus == 0 else print('False')
+
+
+def is_available_now(isAvailableBySSH, isAvailableByICMP):
+    return isAvailableBySSH or isAvailableByICMP
 
 
 def isStateChanged(isAvailableNow, isAvailableBefore):
@@ -56,7 +65,7 @@ def isStateChanged(isAvailableNow, isAvailableBefore):
 
 
 def switch():
-    isAvailableNow = is_available_now()
+    isAvailableNow = is_available_now(is_available_by_SSH(), is_available_by_ICMP())
     wasAvailableBefore = was_available_before()
 
     if isStateChanged(isAvailableNow, wasAvailableBefore):
