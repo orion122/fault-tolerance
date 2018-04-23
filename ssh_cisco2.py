@@ -22,8 +22,8 @@ def switch_main_cisco_to_secondary():
 
 def was_available_before():
     with open('was_available.txt', 'r') as file:
-        wasAvailableBefore = str_to_bool(file.read())
-        return wasAvailableBefore
+        availability_before = str_to_bool(file.read())
+        return availability_before
 
 
 def save_availability_state(state):
